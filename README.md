@@ -7,7 +7,8 @@
  Inspired by Hans [Hans](https://github.com/htool#:~:text=Hans,htool), whos ESP Compas i have used for some time, until buying a second hand NAC-2 including an original Precision-9\
  The work on my pilot controller would not have been difficult without [Hans](https://github.com/htool#:~:text=RaymarineAPtoFakeNavicoAutoPilot)\
  I also like to thank the folks on [Canboat](https://canboat.github.io/canboat/canboat.html#lookup-MANUFACTURER_CODE:~:text=%C3%97-,Top,-PGN%20list)\
-
+ Please observe that this project is not completed, and will be <B>Work In Progress</B> for a long time\
+ <p>
  Most of the PGN's handled of the display, is implemented in Timo's library execpt for these\
 
 PGN 130850  Autopilot command etc.\
