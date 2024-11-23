@@ -10,9 +10,16 @@
  Please observe that this project is not completed, and will be <B>Work In Progress</B> for a long time  
 
  Most of the PGN's handled of the display, is implemented in Timo's library execpt for these  
-
+These 5 PGNs are in apmessages, and are subject to rapid changes  
 PGN 130850  Autopilot command etc.  
 PGN 65341 Autopilot Angle  
 PGN 130821 Ascii data  
 PGN 65305 Pilot Mode etc.  
 PGN 130824 B&G key-value data  
+
+Controller
+Based on ESP32-wroom-32, with built in CAN bus controller
+
+Display
+As display I have chosen the 5" high brightness [RVT50](https://riverdi.com/product/eve4-intelligent-display-rvt50hqbnwc00-b-5-inch-projected-capacitive-touch-panel-optical-bonding-uxtouch)  
+This EVE4 display has Capasitive touch, Optical bonded ( waterproof ?), and a BT817Q GPU  

@@ -5,7 +5,7 @@
 #include "display_state.h"
 
 // Sailsteer is page number one i list of pages
-extern  uint8_t Circle[21512] PROGMEM; 
+extern  uint8_t Sailsteer_outer_Circle[25056] PROGMEM; 
 extern  uint8_t sbbar[20856] PROGMEM;
 extern  uint8_t SmallBlueArrow[5000] PROGMEM;
 extern uint8_t BlueArrowAparent[20000] PROGMEM;
@@ -27,7 +27,7 @@ void init_sailsteer(void){
 
         if(rg_state != SAILST){
         EVE_cmd_loadimage(MEM_SBBAR_SS,EVE_OPT_NODL,sbbar,sizeof(sbbar));               
-        EVE_cmd_loadimage(MEM_CIRCLE_SS,EVE_OPT_NODL,Circle,sizeof(Circle));
+        EVE_cmd_loadimage(MEM_CIRCLE_SS,EVE_OPT_NODL,Sailsteer_outer_Circle,sizeof(Sailsteer_outer_Circle));
         EVE_cmd_loadimage(MEM_SBA_SS,EVE_OPT_NODL,SmallBlueArrow,sizeof(SmallBlueArrow));
         EVE_cmd_loadimage(MEM_BAA_SS,EVE_OPT_NODL,BlueArrowAparent,sizeof(BlueArrowAparent));
         rg_state = SAILST;     
@@ -55,7 +55,7 @@ EVE_cmd_dl_burst(CLEAR(1,0,0));
 
 
 // Red green bar on outer circle
-EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
+/*EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
 EVE_cmd_setbitmap_burst(MEM_SBBAR_SS, EVE_ARGB4, 237U, 44U);
 EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
 EVE_cmd_dl_burst(CMD_LOADIDENTITY);
@@ -64,10 +64,10 @@ EVE_cmd_dl_burst(BITMAP_TRANSFORM_E(0,256));
 EVE_cmd_dl_burst(BITMAP_SIZE(EVE_NEAREST,EVE_BORDER,EVE_BORDER,237,44));
 EVE_cmd_dl_burst(VERTEX2F(670/2-237/2,4));
 EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
-EVE_cmd_dl_burst(DL_END);
+EVE_cmd_dl_burst(DL_END);*/
 #define MAGXY 1
         // Inner circle
-        EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
+        /*EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
         EVE_cmd_setbitmap_burst(MEM_CIRCLE_SS, EVE_ARGB4, 670U, 480U);
         EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
         EVE_cmd_dl_burst(CMD_LOADIDENTITY);
@@ -75,7 +75,7 @@ EVE_cmd_dl_burst(DL_END);
         EVE_cmd_dl_burst(CMD_SETMATRIX);
         EVE_cmd_dl_burst(VERTEX2F((670-670/MAGXY)/2,(480-480/MAGXY)/2));
         EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
-        EVE_cmd_dl_burst(DL_END);
+        EVE_cmd_dl_burst(DL_END);*/
         // Blue arror True wind
         EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
         EVE_cmd_setbitmap_burst(MEM_SBA_SS, EVE_ARGB4, 50U, 50U);
