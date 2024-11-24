@@ -13,6 +13,7 @@
 #define MAGENTA 0xff00ffUL
 #define PURPLE 0x800080UL
 #define WHITE 0xffffffUL
+#define BWHITE 0xAAAAAA
 #define BLACK 0x000000UL
 #define GREY 0x202020UL
 #define LIGHTGREY 0x505050UL

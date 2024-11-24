@@ -5,7 +5,9 @@
 #include "display_state.h"
 
 // Sailsteer is page number one i list of pages
-extern  uint8_t Sailsteer_outer_Circle[25056] PROGMEM; 
+extern  uint8_t Sailsteer_Outer[23528] PROGMEM; 
+extern  uint8_t Sailsteer_Inner[14200] PROGMEM; 
+
 extern  uint8_t sbbar[20856] PROGMEM;
 extern  uint8_t SmallBlueArrow[5000] PROGMEM;
 extern uint8_t BlueArrowAparent[20000] PROGMEM;
@@ -26,15 +28,16 @@ extern double mfd_TWD;
 void init_sailsteer(void){
 
         if(rg_state != SAILST){
-        EVE_cmd_loadimage(MEM_SBBAR_SS,EVE_OPT_NODL,sbbar,sizeof(sbbar));               
-        EVE_cmd_loadimage(MEM_CIRCLE_SS,EVE_OPT_NODL,Sailsteer_outer_Circle,sizeof(Sailsteer_outer_Circle));
+//        EVE_cmd_loadimage(MEM_SBBAR_SS,EVE_OPT_NODL,sbbar,sizeof(sbbar));               
+        EVE_cmd_loadimage(MEM_OUTER_SS,EVE_OPT_NODL,Sailsteer_Outer,sizeof(Sailsteer_Outer));
+        EVE_cmd_loadimage(MEM_INNER_SS,EVE_OPT_NODL,Sailsteer_Inner,sizeof(Sailsteer_Inner));
         EVE_cmd_loadimage(MEM_SBA_SS,EVE_OPT_NODL,SmallBlueArrow,sizeof(SmallBlueArrow));
         EVE_cmd_loadimage(MEM_BAA_SS,EVE_OPT_NODL,BlueArrowAparent,sizeof(BlueArrowAparent));
         rg_state = SAILST;     
         }   
 }
 
-void  Display_sailsteer(void){  //670*480
+void  Display_sailsteer(void){  
 
 
 EVE_cmd_dl_burst(SCISSOR_SIZE(670,480));
@@ -42,11 +45,11 @@ EVE_cmd_dl_burst(CLEAR_COLOR_RGB(255,255,255));
 EVE_cmd_dl_burst(CLEAR(1,0,0));
 // Outer circle
         EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-        EVE_cmd_setbitmap_burst(MEM_CIRCLE_SS, EVE_ARGB4, 670U, 480U);
+        EVE_cmd_setbitmap_burst(MEM_OUTER_SS, EVE_ARGB4, 456U, 456U);
         EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
         EVE_cmd_dl_burst(CMD_LOADIDENTITY);
         EVE_cmd_dl_burst(CMD_SETMATRIX);
-        EVE_cmd_dl_burst(VERTEX2F(0,0));
+        EVE_cmd_dl_burst(VERTEX2F(670/2-456/2,12));
         EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
         EVE_cmd_dl_burst(DL_END);
 
@@ -54,28 +57,16 @@ EVE_cmd_dl_burst(CLEAR(1,0,0));
 
 
 
-// Red green bar on outer circle
-/*EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-EVE_cmd_setbitmap_burst(MEM_SBBAR_SS, EVE_ARGB4, 237U, 44U);
-EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
-EVE_cmd_dl_burst(CMD_LOADIDENTITY);
-EVE_cmd_dl_burst(BITMAP_TRANSFORM_A(0,256));
-EVE_cmd_dl_burst(BITMAP_TRANSFORM_E(0,256));
-EVE_cmd_dl_burst(BITMAP_SIZE(EVE_NEAREST,EVE_BORDER,EVE_BORDER,237,44));
-EVE_cmd_dl_burst(VERTEX2F(670/2-237/2,4));
-EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
-EVE_cmd_dl_burst(DL_END);*/
-#define MAGXY 1
         // Inner circle
-        /*EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-        EVE_cmd_setbitmap_burst(MEM_CIRCLE_SS, EVE_ARGB4, 670U, 480U);
+        EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
+        EVE_cmd_setbitmap_burst(MEM_INNER_SS, EVE_ARGB4, 346, 344U);
         EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
         EVE_cmd_dl_burst(CMD_LOADIDENTITY);
-        EVE_cmd_rotatearound_burst(670/2,480/2,-mfd_heading*65356/360,0.85*65536);
+        EVE_cmd_rotatearound_burst(346/2,344/2,-mfd_heading*65356/360,1*65536);
         EVE_cmd_dl_burst(CMD_SETMATRIX);
-        EVE_cmd_dl_burst(VERTEX2F((670-670/MAGXY)/2,(480-480/MAGXY)/2));
+        EVE_cmd_dl_burst(VERTEX2F(670/2-346/2,480/2-344/2));
         EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
-        EVE_cmd_dl_burst(DL_END);*/
+        EVE_cmd_dl_burst(DL_END);
         // Blue arror True wind
         EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
         EVE_cmd_setbitmap_burst(MEM_SBA_SS, EVE_ARGB4, 50U, 50U);
@@ -88,14 +79,14 @@ EVE_cmd_dl_burst(DL_END);*/
         EVE_cmd_dl_burst(VERTEX2F(xpos,ypos));
         EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
         EVE_cmd_dl_burst(DL_END);
-// temp line from center to insert point
+// temp line from center to insert point Debugging rotating arrows around Outer
 /*EVE_color_rgb_burst(BLACK);
 EVE_cmd_dl_burst(DL_BEGIN|EVE_LINES);
 EVE_cmd_dl(LINE_WIDTH(1U * 16U));
 EVE_cmd_dl_burst(VERTEX2F(670/2,480/2)); EVE_cmd_dl_burst(VERTEX2F(xpos,ypos));
 EVE_cmd_dl_burst(DL_END);*/
 // temp end
-        // |rect top for heading|
+
 
         EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
         EVE_cmd_setbitmap_burst(MEM_BAA_SS, EVE_ARGB4, 100U, 100U);
@@ -114,12 +105,17 @@ EVE_cmd_dl_burst(DL_BEGIN|EVE_LINES);
 EVE_cmd_dl(LINE_WIDTH(3U * 16U));
 
 //       Line from                                      Line to
-EVE_cmd_dl_burst(VERTEX2F(670/2-40,70)); EVE_cmd_dl_burst(VERTEX2F(670/2-40,120));
-EVE_cmd_dl_burst(VERTEX2F(670/2+40,70)); EVE_cmd_dl_burst(VERTEX2F(670/2+40,120));
-EVE_cmd_dl_burst(VERTEX2F(670/2-40,70)); EVE_cmd_dl_burst(VERTEX2F(670/2+40,70));
-EVE_cmd_dl_burst(VERTEX2F(670/2-40,120)); EVE_cmd_dl_burst(VERTEX2F(670/2+40,120));
+EVE_cmd_dl_burst(VERTEX2F(670/2-40,60)); EVE_cmd_dl_burst(VERTEX2F(670/2-40,110));
+EVE_cmd_dl_burst(VERTEX2F(670/2+40,60)); EVE_cmd_dl_burst(VERTEX2F(670/2+40,110));
+EVE_cmd_dl_burst(VERTEX2F(670/2-40,60)); EVE_cmd_dl_burst(VERTEX2F(670/2+40,60));
+EVE_cmd_dl_burst(VERTEX2F(670/2-40,110)); EVE_cmd_dl_burst(VERTEX2F(670/2+40,110));
 EVE_cmd_dl_burst(DL_END);
-EVE_cmd_number_burst(670/2,75,30,EVE_OPT_CENTERX,mfd_heading);
+EVE_color_rgb_burst(BWHITE);
+EVE_cmd_dl_burst(DL_BEGIN|EVE_RECTS);
+EVE_cmd_dl_burst(VERTEX2F(670/2-40+3,60+3)); EVE_cmd_dl_burst(VERTEX2F(670/2+40-3,110-3));
+EVE_cmd_dl_burst(DL_END);
+EVE_color_rgb_burst(BLACK);
+EVE_cmd_number_burst(670/2,60,31,EVE_OPT_CENTERX,mfd_heading);
 // All corners of screen has an indicator
 // Upper left
 EVE_cmd_romfont_burst(0,33);
