@@ -27,10 +27,7 @@
 #define MEM_INNER (0)
 //#define MEM_OUTER 0x3d000
 //#define MEM_PAGE (MEM_OUTER+0x60000)
-#define MEM_UP (MEM_PAGE + 6954 * 4)
-#define MEM_ENTER (MEM_UP + 4578 * 4)
-#define MEM_DOWN (MEM_ENTER + 9736 * 4)
-//#define MEM_MENU (MEM_DOWN + 4942 * 4)
+
 #define MEM_HEAD_HOLD ( MEM_MENU +20000)
 #define MEM_DL_STATIC (EVE_RAM_G_SIZE - 4096) /* 0xff000 - start-address of the static part of the display-list, upper 4k of gfx-mem */
 

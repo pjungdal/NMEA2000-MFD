@@ -1,6 +1,8 @@
 #define MEM_PAGE  0
 #define MEM_MENU  24000
-
+#define MEM_UP    48000
+#define MEM_RETURN 72000
+#define MEM_DOWN   96000
 #define MEM_START 120000
 // Page specific
 //Steering page
@@ -12,8 +14,9 @@
 //Sailsteer page
 #define MEM_OUTER_SS MEM_START
 #define MEM_INNER_SS MEM_OUTER_SS+SIZE_MEM_OUTER_SS
-#define MEM_SBA_SS MEM_INNER_SS+SIZE_MEM_INNER_SS
-#define MEM_BAA_SS MEM_SBA_SS+SIZE_MEM_SBA_SS
+#define MEM_BLUET_SS MEM_INNER_SS+SIZE_MEM_INNER_SS
+#define MEM_BLUEA_SS MEM_BLUET_SS+SIZE_MEM_BLUET_SS
+#define MEM_SHIP_SS MEM_BLUEA_SS + SIZE_MEM_BLUEA_SS
 
 //Combined_1
 #define MEM_CIRCLE_C1 48000 // size 460800
@@ -36,7 +39,7 @@
 // Maybe CMD_GETPROPS can be used to optimize memory consumption
 #define SIZE_MEM_PAGE       24000
 #define SIZE_MEM_UP         24000
-#define SIZE_MEM_RERTURN    24000
+#define SIZE_MEM_RETURN     24000
 #define SIZE_MEM_DOWN       24000
 #define SIZE_MEM_MENU       24000
 //First free memory location after static MENU maps = 120000
@@ -45,9 +48,9 @@
 //Sailsteer page
 #define SIZE_MEM_OUTER_SS  415872 // 456*456 ARGB4
 #define SIZE_MEM_INNER_SS  2*346*344 //346*344 238048
-#define SIZE_MEM_SBA_SS     5000
-#define SIZE_MEM_BAA_SS     20000
-// Memory 415072+238048+5000+20000+120000 = 798120
+#define SIZE_MEM_BLUET_SS      12800
+#define SIZE_MEM_BLUEA_SS      135200
+// Memory 415072+238048+12800+135200+120000 = 957120
 
 //Steering (Autopilot)
 #define SIZE_MEM_REDA      12800

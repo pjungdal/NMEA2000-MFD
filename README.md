@@ -9,7 +9,8 @@
  I also like to thank the folks on [Canboat](https://canboat.github.io/canboat/canboat.html#lookup-MANUFACTURER_CODE:~:text=%C3%97-,Top,-PGN%20list)  
  Please observe that this project is not completed, and will be <B>Work In Progress</B> for a long time  
 
- Most of the PGN's handled of the display, is implemented in Timo's library execpt for these  
+Most of the PGN's handled of the display, is implemented in Timo's library execpt for these  
+
 These 5 PGNs are in apmessages, and are subject to rapid changes  
 PGN 130850  Autopilot command etc.  
 PGN 65341 Autopilot Angle  
@@ -22,4 +23,5 @@ Based on ESP32-wroom-32, with built in CAN bus controller
 
 Display
 As display I have chosen the 5" high brightness [RVT50](https://riverdi.com/product/eve4-intelligent-display-rvt50hqbnwc00-b-5-inch-projected-capacitive-touch-panel-optical-bonding-uxtouch)  
-This EVE4 display has Capasitive touch, Optical bonded ( waterproof ?), and a BT817Q GPU  
+
+This EVE4 display has Capacitive touch, Optical bonded ( waterproof ?), and a BT817Q GPU  

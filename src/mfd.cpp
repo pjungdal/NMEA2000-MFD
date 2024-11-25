@@ -528,6 +528,8 @@ if(ParseN2kWindSpeed(N2kMsg,SID,WindSpeed,WindAngle,WindRef)){
     mfd_relwindangle_rad = WindAngle;
 
 
+    if (mfd_AWA > 180? mfd_AWA = mfd_AWA-360:mfd_AWA = mfd_AWA);
+    mfd_TWD=((int)mfd_heading+(int)mfd_TWA) % 360;
 
 #ifdef MSG_PRINT_WIND
 Serial.print("AWS: ");Serial.print(mfd_AWS); Serial.print(" TWS: ");Serial.print(mfd_TWS);Serial.print(" BSP: ");Serial.print(BSP);
@@ -535,8 +537,6 @@ Serial.print(" AWA: ");Serial.print(mfd_AWA);Serial.print(" TWA: ");Serial.print
 Serial.print(" WindReference: ");Serial.println(mfd_windref);
 #endif
 
-    if (mfd_AWA > 180? mfd_AWA = mfd_AWA-360:mfd_AWA = mfd_AWA);
-    mfd_TWD=((int)mfd_heading+(int)mfd_TWA) % 360;
 
     mfd_windref = WindRef;
 }

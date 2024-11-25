@@ -84,7 +84,9 @@ extern double PosLon;
 
 extern uint8_t menubutton[24000] PROGMEM;
 extern uint8_t pagebutton[24000] PROGMEM;
-
+extern uint8_t upbutton[24000] PROGMEM;
+extern uint8_t returnbutton[24000] PROGMEM;
+extern uint8_t downbutton[24000] PROGMEM;
 //extern const uint8_t outer[44724] PROGMEM;
 extern void  Display_Steering_Page(void);
 extern void init_steering_page(void);
@@ -132,6 +134,9 @@ void TFT_init(void)
         //These are static and loaded in start of RAM_G
         EVE_cmd_loadimage(MEM_PAGE,EVE_OPT_NODL,pagebutton,sizeof(pagebutton));
         EVE_cmd_loadimage(MEM_MENU,EVE_OPT_NODL,menubutton,sizeof(menubutton));
+        EVE_cmd_loadimage(MEM_UP,EVE_OPT_NODL,upbutton,sizeof(upbutton));
+        EVE_cmd_loadimage(MEM_RETURN,EVE_OPT_NODL,returnbutton,sizeof(returnbutton));
+        EVE_cmd_loadimage(MEM_DOWN,EVE_OPT_NODL,downbutton,sizeof(downbutton));
         // As Sailsteer is the default page, this must be loaded in RAM_G
         init_sailsteer();
         initStaticBackground();
@@ -160,14 +165,26 @@ EVE_cmd_dl(DL_TAG);
 
 EVE_cmd_dl(DL_TAG + 20U);
 EVE_cmd_button_burst(680,100,120,90,27,0,"");
+EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
+EVE_cmd_setbitmap_burst(MEM_UP, EVE_ARGB4, 120U, 100U);
+EVE_cmd_dl_burst(VERTEX2F(10880,1600-5*16));
+EVE_cmd_dl_burst(DL_END);
 EVE_cmd_dl(DL_TAG);
 
 EVE_cmd_dl(DL_TAG + 30U);
 EVE_cmd_button_burst(680,190,120,100,27,0,"");
+EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
+EVE_cmd_setbitmap_burst(MEM_RETURN, EVE_ARGB4, 120U, 100U);
+EVE_cmd_dl_burst(VERTEX2F(10880,3040));
+EVE_cmd_dl_burst(DL_END);
 EVE_cmd_dl(DL_TAG);
 
 EVE_cmd_dl(DL_TAG + 40U);
 EVE_cmd_button_burst(680,290,120,90,27,0,"");
+EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
+EVE_cmd_setbitmap_burst(MEM_DOWN, EVE_ARGB4, 120U, 100U);
+EVE_cmd_dl_burst(VERTEX2F(10880,4640-5*16));
+EVE_cmd_dl_burst(DL_END);
 EVE_cmd_dl(DL_TAG);
 
 EVE_cmd_dl(DL_TAG + 50U);
@@ -177,6 +194,8 @@ EVE_cmd_setbitmap_burst(MEM_MENU, EVE_ARGB4, 120U, 100U);
 EVE_cmd_dl_burst(VERTEX2F(10880,6080));
 EVE_cmd_dl_burst(DL_END);
 EVE_cmd_dl(DL_TAG);
+
+
 //buttons_init=true;
 
 }
