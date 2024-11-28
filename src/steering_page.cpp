@@ -4,7 +4,6 @@
 #include "EVE.h"
 #include "tft.h"
 #include "steering_page.h"
-#include "imagemap.h"
 #include "display_state.h"
 
 extern double mfd_heading;
@@ -26,12 +25,44 @@ extern const uint8_t green_arrow[1000] PROGMEM;
 extern const uint8_t red_arrow[1000] PROGMEM;
 extern rg_state_t rg_state;
 
+uint32_t memc_st;
+uint32_t memsb_st;
+uint32_t memga_st;
+uint32_t memra_st;
+uint32_t memfree_st;
+uint32_t width_st,height_st;
+char    str1_st[50];
+
+
+
 void init_steering_page(void){
         if(rg_state != STEER){
-        EVE_cmd_loadimage(MEM_CIRCLE,EVE_OPT_NODL,Circle,sizeof(Circle));
+
+        memc_st=0;
+        EVE_cmd_loadimage(memc_st,EVE_OPT_NODL,Circle,sizeof(Circle));
+        EVE_cmd_getprops(&memsb_st,&width_st,&height_st);
+        sprintf(str1_st,"Load adr: %ul width: %ul height: %ul \n",memsb_st,width_st,height_st);
+        Serial.print(str1_st);
+        EVE_cmd_loadimage(memsb_st,EVE_OPT_NODL,sbbar,sizeof(sbbar));
+        EVE_cmd_getprops(&memga_st,&width_st,&height_st);
+        sprintf(str1_st,"Load adr: %ul width: %ul height: %ul \n",memga_st,width_st,height_st);
+        Serial.print(str1_st);
+        EVE_cmd_loadimage(memga_st,EVE_OPT_NODL,green_arrow,sizeof(green_arrow));
+        EVE_cmd_getprops(&memra_st,&width_st,&height_st);
+        sprintf(str1_st,"Load adr: %ul width: %ul height: %ul \n",memra_st,width_st,height_st);
+        Serial.print(str1_st);
+        EVE_cmd_loadimage(memra_st,EVE_OPT_NODL,red_arrow,sizeof(red_arrow));
+        EVE_cmd_getprops(&memfree_st,&width_st,&height_st);
+        sprintf(str1_st,"Next free load adr: %ul  Free memory RAM_G %u\n",memfree_st,1048572-memfree_st);
+        Serial.print(str1_st);
+
+
+
+
+        /*EVE_cmd_loadimage(MEM_CIRCLE,EVE_OPT_NODL,Circle,sizeof(Circle));
         EVE_cmd_loadimage(MEM_SBBAR,EVE_OPT_NODL,sbbar,sizeof(sbbar));        
         EVE_cmd_loadimage(MEM_GREENA,EVE_OPT_NODL,green_arrow,sizeof(green_arrow));  
-        EVE_cmd_loadimage(MEM_REDA,EVE_OPT_NODL,red_arrow,sizeof(red_arrow));  
+        EVE_cmd_loadimage(MEM_REDA,EVE_OPT_NODL,red_arrow,sizeof(red_arrow));*/  
 
         rg_state = STEER;
         }      
@@ -62,7 +93,7 @@ EVE_cmd_dl(VERTEX2F(453+50, 460));
 EVE_cmd_dl(DL_END);
 
         EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-        EVE_cmd_setbitmap_burst(MEM_CIRCLE, EVE_ARGB4, 670U, 480U);
+        EVE_cmd_setbitmap_burst(memc_st, EVE_ARGB4, 670U, 480U);
         EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
         EVE_cmd_dl_burst(CMD_LOADIDENTITY);
         EVE_cmd_rotatearound_burst(670/2,480,-mfd_heading*65356/360,65536*2);
@@ -138,7 +169,7 @@ EVE_color_rgb_burst(WHITE);
 
 //Red green labels
 EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-EVE_cmd_setbitmap_burst(MEM_SBBAR, EVE_ARGB4, 237U, 44U);
+EVE_cmd_setbitmap_burst(memsb_st, EVE_ARGB4, 237U, 44U);
 EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
 EVE_cmd_dl_burst(CMD_LOADIDENTITY);
 EVE_cmd_dl_burst(BITMAP_TRANSFORM_A(0,128));
@@ -169,7 +200,7 @@ if((mfd_commandedheading - mfd_heading)>-0.01){
 //Serial.print("R: "); Serial.println(mfd_commandedheading-mfd_heading) ; Serial.print("+180: ");Serial.println(mfd_commandedheading-mfd_heading+180) ; 
 
         EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-        EVE_cmd_setbitmap_burst(MEM_GREENA, EVE_ARGB4, 80U, 80U);
+        EVE_cmd_setbitmap_burst(memga_st, EVE_ARGB4, 80U, 80U);
         EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
         EVE_cmd_dl_burst(CMD_LOADIDENTITY);
         EVE_cmd_rotatearound_burst(40,40,(mfd_commandedheading - mfd_heading + 180)*65356/360,1*65536);
@@ -184,7 +215,7 @@ else {
 // red triangle left     
 //Serial.print("L: ");      Serial.println(mfd_commandedheading-mfd_heading+360) ; Serial.print("+180: ");      Serial.println(mfd_commandedheading-mfd_heading+180) ; 
         EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-        EVE_cmd_setbitmap_burst(MEM_REDA, EVE_ARGB4, 80U, 80U);
+        EVE_cmd_setbitmap_burst(memra_st, EVE_ARGB4, 80U, 80U);
         EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
         EVE_cmd_dl_burst(CMD_LOADIDENTITY);
         EVE_cmd_rotatearound_burst(40,40,(mfd_commandedheading - mfd_heading+180)*65356/360,1*65536);

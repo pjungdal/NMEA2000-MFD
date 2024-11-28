@@ -3,14 +3,9 @@
 #include "EVE.h"
 #include "tft.h"
 #include "speeddepth.h"
-#include "imagemap.h"
 #include "display_state.h"
 
-// Sailsteer is page number one i list of pages
-extern  uint8_t Circle[21512] PROGMEM; 
-extern  uint8_t sbbar[20856] PROGMEM;
-extern  uint8_t SmallBlueArrow[5000] PROGMEM;
-extern uint8_t BlueArrowAparent[20000] PROGMEM;
+
 extern rg_state_t rg_state;
 extern double mfd_heading;
 

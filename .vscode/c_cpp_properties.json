@@ -488,6 +488,7 @@
                 "PLATFORMIO=60116",
                 "ARDUINO_ESP32_DEV",
                 "EVE_RVT50H",
+                "EVE_USE_ESP_IDF",
                 "EVE_CS=5",
                 "EVE_PDN=16",
                 "EVE_SCK=18",

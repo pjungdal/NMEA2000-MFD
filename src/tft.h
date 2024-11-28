@@ -18,20 +18,7 @@
 #define GREY 0x202020UL
 #define LIGHTGREY 0x505050UL
 #define DARKGREY 0x303030UL
-/* memory-map defines */
-#define MEM_FONT 0x000f7e00 /* the .xfont file for the UTF-8 font is copied here */
-#define MEM_LOGO 0x000f8000 /* start-address of logo, needs 6272 bytes of memory */
 
-
-
-#define MEM_INNER (0)
-//#define MEM_OUTER 0x3d000
-//#define MEM_PAGE (MEM_OUTER+0x60000)
-
-#define MEM_HEAD_HOLD ( MEM_MENU +20000)
-#define MEM_DL_STATIC (EVE_RAM_G_SIZE - 4096) /* 0xff000 - start-address of the static part of the display-list, upper 4k of gfx-mem */
-
-#define LAYOUT_Y1 66
 
 #ifdef __cplusplus
 extern "C"

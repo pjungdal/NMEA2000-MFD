@@ -25,3 +25,7 @@ Display
 As display I have chosen the 5" high brightness [RVT50](https://riverdi.com/product/eve4-intelligent-display-rvt50hqbnwc00-b-5-inch-projected-capacitive-touch-panel-optical-bonding-uxtouch)  
 
 This EVE4 display has Capacitive touch, Optical bonded ( waterproof ?), and a BT817Q GPU  
+
+Bitmaps for buttons moved to flash memory, to save some space in RAM_G
+
+Fixed address memory map for bitmaps in RAM_G changed to use CMD_GETPROPS

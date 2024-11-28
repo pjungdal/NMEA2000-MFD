@@ -1,5 +1,4 @@
 #include "EVE.h"
-#include "tft_data.h"
 #include "tft.h"
 #include "touch.h"
 #include <N2kMessages.h>
@@ -25,6 +24,7 @@ extern double mfd_commandedangle;
 extern  unsigned int  mfd_APMode;
 extern  unsigned char mfd_APStatus;
 extern unsigned int  mfd_PrevAPMode;
+
 Preferences pref;
 void touch_calibrate(void)
 {
@@ -134,8 +134,9 @@ void TFT_touch(void)
             //Serial.println("up");
 #endif
             break;
-        case 30: /* use button on top as on/off toggle-switch */
-            //Selectedpage = 3;
+        case 30:if (((touch_current_millis - touch_previous_millis) > 50))
+            {
+            }
 #ifdef DEBUG
             //Serial.println("enter");
 #endif

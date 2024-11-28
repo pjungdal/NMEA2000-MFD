@@ -30,7 +30,6 @@
  */
 //#include <Arduino.h>
 #include "EVE.h"
-#include "tft_data.h"
 #include "tft.h"
 #include "touch.h"
 //#include "globals.h"
@@ -41,7 +40,6 @@
 #include <math.h>
 #include <chrono>
 #include <time.h>
-#include "imagemap.h"
 #include "display_state.h"
 #define TEST_UTF8 0
 
@@ -109,6 +107,8 @@ uint8_t LightLevel = 10;
 int heading = 0;
 bool buttons_init =false;
 rg_state_t rg_state = EMPTY;
+char status_str[200];
+uint8_t flashstatus = 0;
 
 void initStaticBackground(void)
 {
@@ -128,16 +128,26 @@ void TFT_init(void)
     if (E_OK == EVE_init())
     {
         tft_active = 1;
+        EVE_cmd_flashattach();
+		Serial.println(EVE_cmd_flashfast(),16);
+		flashstatus=EVE_memRead8(REG_FLASH_STATUS);
+        EVE_memWrite8(REG_PWM_DUTY, 0x30);
+		initStaticBackground();
+		switch (flashstatus){
+			case 0:sprintf(status_str,"%s ","Flash status: FLASH_STATUS_INIT ");
+			break;
+			case 1:sprintf(status_str,"%s ","Flash status: FLASH_STATUS_DETACHED");
+			break;
+			case 2:sprintf(status_str,"%s ","Flash status: FLASH_STATUS_BASIC");
+			break;
+			case 3:sprintf(status_str,"%s ","Flash status: FLASH_STATUS_FULL");
+			break;
+		}
+				Serial.print("TFT init");Serial.print(" status:");Serial.println(status_str);
+
         EVE_memWrite8(REG_PWM_DUTY, 0x10);  /* setup backlight, range is from 0 = off to 0x80 = max */
         touch_calibrate();
-        // Load bitmaps for buttons on right side of display
-        //These are static and loaded in start of RAM_G
-        EVE_cmd_loadimage(MEM_PAGE,EVE_OPT_NODL,pagebutton,sizeof(pagebutton));
-        EVE_cmd_loadimage(MEM_MENU,EVE_OPT_NODL,menubutton,sizeof(menubutton));
-        EVE_cmd_loadimage(MEM_UP,EVE_OPT_NODL,upbutton,sizeof(upbutton));
-        EVE_cmd_loadimage(MEM_RETURN,EVE_OPT_NODL,returnbutton,sizeof(returnbutton));
-        EVE_cmd_loadimage(MEM_DOWN,EVE_OPT_NODL,downbutton,sizeof(downbutton));
-        // As Sailsteer is the default page, this must be loaded in RAM_G
+
         init_sailsteer();
         initStaticBackground();
         EVE_execute_cmd;
@@ -156,51 +166,41 @@ void TFT_buttons(void)
 if (!buttons_init){
 EVE_cmd_dl(DL_TAG + 10U);
 EVE_cmd_fgcolor(0);
-EVE_cmd_button_burst(680,0,120,100,27,0,"");
+EVE_color_rgb_burst(WHITE);
 EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-EVE_cmd_setbitmap_burst(MEM_PAGE, EVE_ARGB4, 120U, 100U);
-EVE_cmd_dl_burst(VERTEX2F(10880,0));
-EVE_cmd_dl_burst(DL_END);
+EVE_cmd_button_burst(680,0,120,100,27,0,"");
+		EVE_cmd_setbitmap_burst(0x800000|128,EVE_ASTC_4X4,120,100);
+		EVE_cmd_dl_burst(VERTEX2F(10880,0));
 EVE_cmd_dl(DL_TAG);
 
 EVE_cmd_dl(DL_TAG + 20U);
 EVE_cmd_button_burst(680,100,120,90,27,0,"");
-EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-EVE_cmd_setbitmap_burst(MEM_UP, EVE_ARGB4, 120U, 100U);
-EVE_cmd_dl_burst(VERTEX2F(10880,1600-5*16));
-EVE_cmd_dl_burst(DL_END);
+		EVE_cmd_setbitmap_burst(0x800000|512,EVE_ASTC_4X4,120,100);
+		EVE_cmd_dl_burst(VERTEX2F(10880,1600-5*16));
 EVE_cmd_dl(DL_TAG);
 
 EVE_cmd_dl(DL_TAG + 30U);
 EVE_cmd_button_burst(680,190,120,100,27,0,"");
-EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-EVE_cmd_setbitmap_burst(MEM_RETURN, EVE_ARGB4, 120U, 100U);
-EVE_cmd_dl_burst(VERTEX2F(10880,3040));
-EVE_cmd_dl_burst(DL_END);
+		EVE_cmd_setbitmap_burst(0x800000|896,EVE_ASTC_4X4,120,100);
+		EVE_cmd_dl_burst(VERTEX2F(10880,3040));
 EVE_cmd_dl(DL_TAG);
 
 EVE_cmd_dl(DL_TAG + 40U);
 EVE_cmd_button_burst(680,290,120,90,27,0,"");
-EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-EVE_cmd_setbitmap_burst(MEM_DOWN, EVE_ARGB4, 120U, 100U);
-EVE_cmd_dl_burst(VERTEX2F(10880,4640-5*16));
-EVE_cmd_dl_burst(DL_END);
+		EVE_cmd_setbitmap_burst(0x800000|1280,EVE_ASTC_4X4,120,100);
+		EVE_cmd_dl_burst(VERTEX2F(10880,4640-5*16));
 EVE_cmd_dl(DL_TAG);
 
 EVE_cmd_dl(DL_TAG + 50U);
 EVE_cmd_button_burst(680,380,380,100,27,0,"");
-EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-EVE_cmd_setbitmap_burst(MEM_MENU, EVE_ARGB4, 120U, 100U);
-EVE_cmd_dl_burst(VERTEX2F(10880,6080));
-EVE_cmd_dl_burst(DL_END);
+		EVE_cmd_setbitmap_burst(0x800000|1664,EVE_ASTC_4X4,120,100);
+		EVE_cmd_dl_burst(VERTEX2F(10880,6080));
 EVE_cmd_dl(DL_TAG);
-
-
-//buttons_init=true;
+EVE_cmd_dl_burst(DL_END);}
 
 }
 }
-}
+
 void TFT_display(void){
 char timestr[10];
 int hours;
