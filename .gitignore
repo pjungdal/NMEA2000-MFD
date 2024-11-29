@@ -26,6 +26,8 @@
 *.so
 *.so.*
 *.dylib
+# Platformio directories
+.*
 
 # Executables
 *.exe
