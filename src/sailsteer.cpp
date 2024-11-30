@@ -30,11 +30,14 @@ uint32_t memba_ss;
 uint32_t memfree_ss;
 uint32_t width_ss,height_ss;
 char    str1_ss[50];
+extern void spinner(void);
 
-
-void init_sailsteer(void){
+bool init_sailsteer(void){
 
         if(rg_state != SAILST){
+               
+        spinner();
+        Serial.println("Loading sailsteer");
         memco_ss=0;
         EVE_cmd_loadimage(memco_ss,EVE_OPT_NODL,Sailsteer_Outer,sizeof(Sailsteer_Outer));
         EVE_cmd_getprops(&memci_ss,&width_ss,&height_ss);
@@ -56,16 +59,10 @@ void init_sailsteer(void){
         EVE_cmd_getprops(&memfree_ss,&width_ss,&height_ss);
         sprintf(str1_ss,"Next free load adr: %ul  Free memory RAM_G %u\n",memfree_ss,1048572-memfree_ss);
         Serial.print(str1_ss);
-
-
-        /*EVE_cmd_loadimage(MEM_OUTER_SS,EVE_OPT_NODL,Sailsteer_Outer,sizeof(Sailsteer_Outer));
-        EVE_cmd_loadimage(MEM_INNER_SS,EVE_OPT_NODL,Sailsteer_Inner,sizeof(Sailsteer_Inner));
-        EVE_cmd_loadimage(MEM_BLUET_SS,EVE_OPT_NODL,blue_t,sizeof(blue_t));
-        EVE_cmd_loadimage(MEM_BLUEA_SS,EVE_OPT_NODL,blue_a,sizeof(blue_a));
-        EVE_cmd_loadimage(MEM_SHIP_SS,EVE_OPT_NODL,Sailsteer_Ship,sizeof(Sailsteer_Ship));*/
-       
-        rg_state = SAILST;     
-        }   
+        rg_state = SAILST;
+        return true;     
+        }
+        return false; 
 }
 
 void  Display_sailsteer(void){  

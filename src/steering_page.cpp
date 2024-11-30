@@ -32,57 +32,48 @@ uint32_t memra_st;
 uint32_t memfree_st;
 uint32_t width_st,height_st;
 char    str1_st[50];
+extern void spinner(void);
 
 
-
-void init_steering_page(void){
+bool init_steering_page(void){
         if(rg_state != STEER){
+        spinner();
+        Serial.println("Loading steering");
 
         memc_st=0;
+                sprintf(str1_st,"Circle Load adr: %ul width: %ul height: %ul \n",memc_st,width_st,height_st); Serial.print(str1_st);
         EVE_cmd_loadimage(memc_st,EVE_OPT_NODL,Circle,sizeof(Circle));
-        EVE_cmd_getprops(&memsb_st,&width_st,&height_st);
-        sprintf(str1_st,"Load adr: %ul width: %ul height: %ul \n",memsb_st,width_st,height_st);
-        Serial.print(str1_st);
-        EVE_cmd_loadimage(memsb_st,EVE_OPT_NODL,sbbar,sizeof(sbbar));
-        EVE_cmd_getprops(&memga_st,&width_st,&height_st);
-        sprintf(str1_st,"Load adr: %ul width: %ul height: %ul \n",memga_st,width_st,height_st);
-        Serial.print(str1_st);
+        
+                EVE_cmd_getprops(&memga_st,&width_st,&height_st);
+                sprintf(str1_st,"Green arrow Load adr: %ul width: %ul height: %ul \n",memga_st,width_st,height_st); Serial.print(str1_st);
         EVE_cmd_loadimage(memga_st,EVE_OPT_NODL,green_arrow,sizeof(green_arrow));
-        EVE_cmd_getprops(&memra_st,&width_st,&height_st);
-        sprintf(str1_st,"Load adr: %ul width: %ul height: %ul \n",memra_st,width_st,height_st);
-        Serial.print(str1_st);
+        
+                EVE_cmd_getprops(&memra_st,&width_st,&height_st);
+                sprintf(str1_st,"Red arrow Load adr: %ul width: %ul height: %ul \n",memra_st,width_st,height_st); Serial.print(str1_st);
         EVE_cmd_loadimage(memra_st,EVE_OPT_NODL,red_arrow,sizeof(red_arrow));
-        EVE_cmd_getprops(&memfree_st,&width_st,&height_st);
-        sprintf(str1_st,"Next free load adr: %ul  Free memory RAM_G %u\n",memfree_st,1048572-memfree_st);
-        Serial.print(str1_st);
+        // Note Something makes the loading of sbbar the next EVE_cmd_getprops return 0. Placing it last in the list of loads solves the problem (temporarily)
+                EVE_cmd_getprops(&memsb_st,&width_st,&height_st);
+                sprintf(str1_st,"SB bar Load adr: %ul width: %ul height: %ul \n",memsb_st,width_st,height_st); Serial.print(str1_st);
+        EVE_cmd_loadimage(memsb_st,EVE_OPT_NODL,sbbar,sizeof(sbbar));
+        
+                EVE_cmd_getprops(&memfree_st,&width_st,&height_st);
+                sprintf(str1_st,"Next free load adr: %ul  Free memory RAM_G %u\n",memfree_st,1048572-memfree_st); Serial.print(str1_st);
 
-
-
-
-        /*EVE_cmd_loadimage(MEM_CIRCLE,EVE_OPT_NODL,Circle,sizeof(Circle));
-        EVE_cmd_loadimage(MEM_SBBAR,EVE_OPT_NODL,sbbar,sizeof(sbbar));        
-        EVE_cmd_loadimage(MEM_GREENA,EVE_OPT_NODL,green_arrow,sizeof(green_arrow));  
-        EVE_cmd_loadimage(MEM_REDA,EVE_OPT_NODL,red_arrow,sizeof(red_arrow));*/  
 
         rg_state = STEER;
-        }      
+        return true;
+        }             
+        return false;  
 }
        
 void  Display_Steering_Page(void){  //670*480
 char str1[20];
 
-
-
-
 EVE_cmd_dl_burst(SCISSOR_SIZE(670,480));
 EVE_cmd_dl_burst(CLEAR_COLOR_RGB(255,255,255));
 EVE_cmd_dl_burst(CLEAR(1,0,0));
 
-        
-
 EVE_color_rgb_burst(BLACK);
-
-
 EVE_cmd_dl(DL_BEGIN | EVE_RECTS);
 EVE_cmd_dl(LINE_WIDTH(3U * 16U));
 EVE_cmd_dl(VERTEX2F(670/2-40, 10));
@@ -150,8 +141,6 @@ EVE_cmd_dl_burst(DL_END);
 EVE_color_rgb_burst(BLACK);
 
 EVE_cmd_romfont(1,33);
-//EVE_cmd_text_burst(50, 20, 29, 0, "Pos");
-
 
 if (Cog >=0 && Cog <=360) EVE_cmd_number_burst(550,230,1,EVE_OPT_CENTERX,Cog); else EVE_cmd_text_burst(550, 230, 1, EVE_OPT_CENTERX, "---");
 EVE_cmd_text_burst(463, 200, 29, 0, "COG");

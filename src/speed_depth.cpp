@@ -18,7 +18,7 @@ extern double mfd_AWA;
 extern double mfd_TWS;
 extern double mfd_TWD;
 
-void init_speed_depth(void){}
+bool init_speed_depth(void){        return false;}
 
 void display_speed_depth(void){
 EVE_cmd_dl_burst(SCISSOR_SIZE(670,480));

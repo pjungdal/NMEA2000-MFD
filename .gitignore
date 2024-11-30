@@ -27,8 +27,8 @@
 *.so.*
 *.dylib
 # Platformio directories
-.*
-
+.pio
+.vscode
 # Executables
 *.exe
 *.out

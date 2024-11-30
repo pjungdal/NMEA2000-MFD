@@ -79,26 +79,22 @@ extern double Sog;
 extern double TimeLoc;
 extern double PosLat;
 extern double PosLon;
+extern uint8_t pages[10];
 
-extern uint8_t menubutton[24000] PROGMEM;
-extern uint8_t pagebutton[24000] PROGMEM;
-extern uint8_t upbutton[24000] PROGMEM;
-extern uint8_t returnbutton[24000] PROGMEM;
-extern uint8_t downbutton[24000] PROGMEM;
-//extern const uint8_t outer[44724] PROGMEM;
+
 extern void  Display_Steering_Page(void);
-extern void init_steering_page(void);
+extern bool init_steering_page(void);
 extern void Display_sailsteer(void);
-extern void init_sailsteer(void);
+extern bool init_sailsteer(void);
 extern void Display_gps_page(void);
 extern void display_pilot(void);
-extern void init_speed_depth(void);
+extern bool init_speed_depth(void);
 extern void display_speed_depth(void);
-extern void init_combined1_page(void);   
+extern bool init_combined1_page(void);   
 extern void  Display_combined1_Page(void);
-extern void init_combined2_page(void);   
+extern bool init_combined2_page(void);   
 extern void  Display_combined2_Page(void);
-extern void init_digital(void);
+extern bool init_digital(void);
 extern void display_digital(void);
 uint32_t num_dl_static; /* amount of bytes in the static part of our display-list */
 uint8_t tft_active;
@@ -110,17 +106,8 @@ rg_state_t rg_state = EMPTY;
 char status_str[200];
 uint8_t flashstatus = 0;
 
-void initStaticBackground(void)
-{
-    EVE_cmd_dl(CMD_DLSTART); /* Start the display list */
-    EVE_cmd_dl(DL_TAG); /* no tag = 0 - do not use the following objects for touch-detection */
-    EVE_cmd_bgcolor(WHITE); /* light grey */
-    EVE_cmd_dl(DL_VERTEX_FORMAT); /* set to 0 - reduce precision for VERTEX2F to 1 pixel instead of 1/16 pixel default */
-    EVE_cmd_dl(DL_END);
-    EVE_execute_cmd();
 
 
-}
 
 void TFT_init(void)
 {
@@ -132,7 +119,6 @@ void TFT_init(void)
 		Serial.println(EVE_cmd_flashfast(),16);
 		flashstatus=EVE_memRead8(REG_FLASH_STATUS);
         EVE_memWrite8(REG_PWM_DUTY, 0x30);
-		initStaticBackground();
 		switch (flashstatus){
 			case 0:sprintf(status_str,"%s ","Flash status: FLASH_STATUS_INIT ");
 			break;
@@ -146,11 +132,7 @@ void TFT_init(void)
 				Serial.print("TFT init");Serial.print(" status:");Serial.println(status_str);
 
         EVE_memWrite8(REG_PWM_DUTY, 0x10);  /* setup backlight, range is from 0 = off to 0x80 = max */
-        touch_calibrate();
 
-        init_sailsteer();
-        initStaticBackground();
-        EVE_execute_cmd;
     }
 }
 
@@ -207,9 +189,46 @@ int hours;
 int mins;
 int secs;
 int deg;
+bool loading=false;
+    switch ((pages[Selectedpage]))
+    {
+    case 1:{ // Sail steer
+        loading=init_sailsteer();
+    break;
+    }
+    case 2:{//Speed and depth
+        loading=init_speed_depth();
+    break;
+        }
+    case 3:{
+        loading=init_steering_page();
+    break;}
+    case 4:{
+        loading=init_digital();
+    break;}
+    case 5:{
+        loading=init_combined2_page();
+    break;}
+    case 6:{//Navigate
+    break;}
+    case 7:{
+        loading=init_combined1_page();
+    break;}
+    case 8:{    // B&G pilot controller
+
+    break;}
+
+    default:
+    break;
+    }
+if(loading) return;
+
+        //if (EVE_IS_BUSY == EVE_busy()) /* is EVE still processing the last display list? */
+        /*{
+            return;
+        }*/
 
     EVE_start_cmd_burst();
-
     EVE_cmd_romfont(0,34);
     EVE_cmd_romfont(1,32);
 
@@ -222,47 +241,46 @@ int deg;
     EVE_memWrite8(REG_PWM_DUTY, LightLevel);  /* setup backlight, range is from 0 = off to 0x80 = max */
     EVE_color_rgb(WHITE);
     EVE_cmd_dl(DL_VERTEX_FORMAT);
-
-    switch ((Selectedpage))
-
+   //Serial.print("Selected: "); Serial.print(Selectedpage); Serial.print(" Display: ");Serial.println(pages[Selectedpage]);
+    switch ((pages[Selectedpage]))
     {
-    case 1:/* Sail steer*/{
-        init_sailsteer();
+    case 1:{ // Sail steer
+//        init_sailsteer();
         Display_sailsteer();
         pagedisplayed = 1;
     break;
     }
-    case 2:{/*Speed and depth*/
-        init_speed_depth();
+    case 2:{//Speed and depth
+ //       init_speed_depth();
         display_speed_depth();
         pagedisplayed = 2;
     break;
         }
     case 3:{
-        init_steering_page();
+//        init_steering_page();
         Display_Steering_Page();
         pagedisplayed = 3;
     break;}
     case 4:{
-        init_digital();
+//        init_digital();
         display_digital();
         pagedisplayed = 4;
     break;}
     case 5:{
-        init_combined2_page();
+//        init_combined2_page();
         Display_combined2_Page();
         pagedisplayed = 5;
     break;}
-    case 6:{/*Navigate*/
+    case 6:{//Navigate
         Display_gps_page(); 
         pagedisplayed = 6;
     break;}
     case 7:{
-        init_combined1_page();
+//        init_combined1_page();
         Display_combined1_Page();
         pagedisplayed = 7;
     break;}
-    case 8:{/* B&G pilot controller*/
+    case 8:{    // B&G pilot controller
         display_pilot();
         pagedisplayed = 8;
     break;}

@@ -27,9 +27,12 @@ uint32_t memba_2;
 uint32_t memfree_2;
 uint32_t width_2,height_2;
 char    str1_2[50];
-
-void init_combined2_page(void){
+extern void spinner(void);
+bool init_combined2_page(void){
         if(rg_state != COMB2){
+                spinner();
+        Serial.println("Loading combined 2");
+
         memc_2=0;
         EVE_cmd_loadimage(memc_2,EVE_OPT_NODL,CircleCombined1,sizeof(CircleCombined1));
         EVE_cmd_getprops(&mempa_2,&width_2,&height_2);
@@ -53,11 +56,12 @@ void init_combined2_page(void){
         Serial.print(str1_2);
 
         rg_state = COMB2;
-        }      
+        return true;
+        } 
+        return false;  
 }
        
 void  Display_combined2_Page(void){ 
-//EVE_cmd_dl_burst(CMD_DLSTART);
 EVE_cmd_dl_burst(SCISSOR_SIZE(670,480));
 EVE_cmd_dl_burst(CLEAR_COLOR_RGB(255,255,255));
 EVE_cmd_dl_burst(CLEAR(1,0,0));
@@ -66,45 +70,21 @@ EVE_cmd_dl_burst(CLEAR(1,0,0));
 
 EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
 EVE_cmd_setbitmap_burst(memc_2, EVE_ARGB4, 480U, 480U);
-//EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
-//EVE_cmd_dl_burst(CMD_LOADIDENTITY);
-//EVE_cmd_rotatearound_burst(670/2,480,-mfd_heading*65356/360,65536*2);
-//EVE_cmd_translate_burst(0, 480/2*65536);
-//EVE_cmd_dl_burst(CMD_SETMATRIX);
+
 EVE_cmd_dl_burst(VERTEX2F(670-480,0));
-//EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
 EVE_cmd_dl_burst(DL_END);
 
-/*EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
-EVE_cmd_setbitmap_burst(MEM_INNER_C, EVE_ARGB4, 480U, 480U);
-EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
-EVE_cmd_dl_burst(CMD_LOADIDENTITY);
-EVE_cmd_rotatearound_burst(480/2,480/2,-mfd_heading*65356/360,65536*1);
-//EVE_cmd_translate_burst(0, 480/2*65536);
-EVE_cmd_dl_burst(CMD_SETMATRIX);
-EVE_cmd_dl_burst(VERTEX2F(670-480,0));
-EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
-EVE_cmd_dl_burst(DL_END);*/
 
 EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
 EVE_cmd_setbitmap_burst(memsa_2, EVE_ARGB4, 104U, 54U);
-//EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
-//EVE_cmd_dl_burst(CMD_LOADIDENTITY);
-//EVE_cmd_rotatearound_burst(670/2,480,-mfd_heading*65356/360,65536*2);
-//EVE_cmd_translate_burst(0, 480/2*65536);
-//EVE_cmd_dl_burst(CMD_SETMATRIX);
+
 EVE_cmd_dl_burst(VERTEX2F(432,28));
-//EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
+
 EVE_cmd_dl_burst(DL_END);
 EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
 EVE_cmd_setbitmap_burst(mempa_2, EVE_ARGB4, 103U, 54U);
-//EVE_cmd_dl_burst(DL_SAVE_CONTEXT);
-//EVE_cmd_dl_burst(CMD_LOADIDENTITY);
-//EVE_cmd_rotatearound_burst(670/2,480,-mfd_heading*65356/360,65536*2);
-//EVE_cmd_translate_burst(0, 480/2*65536);
-//EVE_cmd_dl_burst(CMD_SETMATRIX);
+
 EVE_cmd_dl_burst(VERTEX2F(324,28));
-//EVE_cmd_dl_burst(DL_RESTORE_CONTEXT);
 EVE_cmd_dl_burst(DL_END);
 // Blue triangle True wind        
         EVE_cmd_dl_burst(DL_BEGIN | EVE_BITMAPS);
@@ -163,13 +143,7 @@ EVE_cmd_dl_burst(VERTEX2F(0,160)); EVE_cmd_dl_burst(VERTEX2F(150,160));
 EVE_cmd_dl_burst(VERTEX2F(0,320)); EVE_cmd_dl_burst(VERTEX2F(150,320));
 EVE_cmd_dl_burst(DL_END);
 
-/*EVE_cmd_dl(DL_BEGIN|EVE_RECTS);
-EVE_color_rgb_burst(WHITE);
-EVE_cmd_dl(LINE_WIDTH(1U * 16U));
-EVE_cmd_dl(VERTEX2F(190+480/2-38,82-4));
-EVE_cmd_dl(VERTEX2F(190+480/2+38,128-4));
-EVE_cmd_dl_burst(DL_END);*/
-//EVE_color_rgb_burst(BLACK);
+
 EVE_cmd_number_burst(190+480/2,82,31,EVE_OPT_CENTERX,mfd_heading);
     } 
 

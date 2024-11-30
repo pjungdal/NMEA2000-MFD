@@ -119,17 +119,27 @@ double PosLon;
 double mfd_XTE;
 static uint32_t update_timer = 0;
 Preferences preferences;
+uint8_t pages[10];
+int numberofpages;
 void setup()
 {
+    
+    
     pinMode(EVE_CS, OUTPUT);
+    digitalWrite(EVE_CS, OUTPUT);
     digitalWrite(EVE_CS, HIGH);
     pinMode(EVE_PDN, OUTPUT);
     digitalWrite(EVE_PDN, LOW);
+
     Serial.begin(115200);
     preferences.begin("pju-mfd",false);
     Selectedpage = preferences.getUInt("Selected",1);
     preferences.end();
 
+    memset(pages,0,sizeof(pages));
+    pages[0]=1;pages[1]=2;pages[2]=3;
+    numberofpages=3;
+    if(Selectedpage>numberofpages)Selectedpage=0;
 #if defined (ESP32)
 #if defined (EVE_USE_ESP_IDF) /* not using the Arduino SPI class in order to use DMA */
     EVE_init_spi();
@@ -159,7 +169,7 @@ void setup()
     SPI.endTransaction();
     SPI.beginTransaction(SPISettings(16UL * 1000000UL, MSBFIRST, SPI_MODE0));
 #endif
-TFT_buttons();
+//TFT_buttons();
 OutputStream = &Serial;
 
 NMEA2000.SetN2kCANSendFrameBufSize(250);
@@ -856,7 +866,7 @@ void loop()
         micros_end = micros();
 
         display_delay++;
-        if (display_delay > 3) /* refresh the display every 20ms */
+        if (display_delay > 5) /* refresh the display every 20ms */
         {
             display_delay = 0;
             micros_start = micros();
