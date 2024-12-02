@@ -29,3 +29,6 @@ This EVE4 display has Capacitive touch, Optical bonded ( waterproof ?), and a BT
 Bitmaps for buttons moved to flash memory, to save some space in RAM_G
 
 Fixed address memory map for bitmaps in RAM_G changed to use CMD_GETPROPS
+
+Selection of pages displayed in menu. pages button more than 2 secs.
+List stored in ESP32 flash

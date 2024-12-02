@@ -26,15 +26,25 @@ extern  unsigned char mfd_APStatus;
 extern unsigned int  mfd_PrevAPMode;
 extern uint8_t pages[10];
 extern int numberofpages;
+extern uint8_t menuselect;
+extern bool pmquit,pmstore;
+extern uint8_t pmpage,pmfunction;
+extern uint8_t pages[10];
+extern void readsettings();
+extern void writesettings();
 Preferences pref;
 
 
 /* check for touch events and setup vars for TFT_display() */
 void TFT_touch(void)
 {
+    bool timeout;
+    uint16_t logntime = 2000; // timeout after 2 secs
+    uint16_t shorttime = 200;
     static uint32_t touch_previous_millis = 0;
     uint32_t touch_current_millis;
     tN2kMsg N2kMsg;
+    unsigned long ptimer;
     touch_current_millis = millis();
     if (tft_active != 0)
     {
@@ -55,24 +65,30 @@ void TFT_touch(void)
 
         case 10: 
                  if ( ((touch_current_millis - touch_previous_millis) > 500)){
+                    if  ((EVE_memRead32(REG_TOUCH_RAW_XY))!=0xFFFFFFFF){ 
+                        timeout=false;
+
+                        ptimer = millis();
+                        do{ timeout=((millis() - ptimer)> logntime);} 
+                            while ((EVE_memRead32(REG_TOUCH_RAW_XY)!=0xFFFFFFFF));
+                            if (timeout)menuselect=1;
+                        }
+                    else{
                      touch_previous_millis = touch_current_millis;
                     if(numberofpages >0){
-                     Selectedpage++;
-                    if(Selectedpage >= numberofpages) Selectedpage=0;
-
-                     }
-
+                                        Selectedpage++;
+                                        if(Selectedpage >= numberofpages) Selectedpage=0;}
+                    }
 #ifdef DEBUG
-            //Serial.println(Selectedpage);
+//Serial.println(Selectedpage);
 #endif
-
-                 }
+                }
             break;
         case 20: /* use button on top as on/off toggle-switch */
             if (((touch_current_millis - touch_previous_millis) > 50))
             {
                 touch_previous_millis = touch_current_millis;
-
+Serial.println("Write settings");writesettings();
             }
 #ifdef DEBUG
             //Serial.println("up");
@@ -91,7 +107,7 @@ void TFT_touch(void)
                 touch_previous_millis = touch_current_millis;
 
             }
-
+Serial.println("Read settings");readsettings();
 #ifdef DEBUG
                 //Serial.println("down");
 #endif
@@ -286,7 +302,38 @@ void TFT_touch(void)
             }
             NMEA2000.SendMsg(N2kMsg);
             break;
+            // Page menu
+            case 160: { Serial.println("Page <");
+                     ptimer = millis();
+                        do{ timeout=((millis() - ptimer)> shorttime);} while ((EVE_memRead32(REG_TOUCH_RAW_XY)!=0xFFFFFFFF)) ;
+                        if(timeout)(pmpage <= 0)?pmpage = 9 : pmpage--;
+                    }
+                    break;
+            case 161: { Serial.println("Page >");
+                     ptimer = millis();
+                        do{ timeout=((millis() - ptimer)> shorttime);} while ((EVE_memRead32(REG_TOUCH_RAW_XY)!=0xFFFFFFFF)) ;
+                        if(timeout)(pmpage >= 9)?pmpage = 0 : pmpage++;
+                    }
+                    break;
+             case 162: { Serial.println("Function <");
+                     ptimer = millis();
+                        do{ timeout=((millis() - ptimer)> shorttime);} while ((EVE_memRead32(REG_TOUCH_RAW_XY)!=0xFFFFFFFF)) ;
+                        if(timeout)(pages[pmpage] <= 1)?pages[pmpage] = 9 : pages[pmpage]--;
+                    }
+                    break;
+            case 163: { Serial.println("Function >");
+                     ptimer = millis();
+                        do{ timeout=((millis() - ptimer)> shorttime);} while ((EVE_memRead32(REG_TOUCH_RAW_XY)!=0xFFFFFFFF)) ;
+                        if(timeout)(pages[pmpage] >= 9)?pages[pmpage] = 1 : pages[pmpage]++;
+                    }
+            case 165: { Serial.println("Store");
+                     ptimer = millis();
+                        do{ timeout=((millis() - ptimer)> shorttime);} while ((EVE_memRead32(REG_TOUCH_RAW_XY)!=0xFFFFFFFF)) ;
+                        if(timeout)pmstore=true;
+                    }
  
+                    break;
+            case 170: pmquit=true;
 
         default:
             break;

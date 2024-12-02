@@ -55,6 +55,8 @@ void COGSOG(const tN2kMsg &N2kMsg);
 void TimeAndDate(const tN2kMsg &N2kMsg);
 void PosRapid(const tN2kMsg &N2kMsg);
 void CrossTrackError(const tN2kMsg &N2kMsg);
+void readsettings(void);
+void writesettings(void);
 //ParseN2kXTE
 tNMEA2000Handler NMEA2000Handlers[] = {
     //{126992L, &SystemTime},
@@ -121,6 +123,9 @@ static uint32_t update_timer = 0;
 Preferences preferences;
 uint8_t pages[10];
 int numberofpages;
+uint8_t menuselect=0;
+bool pmquit,pmstore = false;
+uint8_t pmpage,pmfunction=0;
 void setup()
 {
     
@@ -134,12 +139,18 @@ void setup()
     Serial.begin(115200);
     preferences.begin("pju-mfd",false);
     Selectedpage = preferences.getUInt("Selected",1);
+    //if(preferences.isKey("Pages4")) Serial.println("Pages exist"); else Serial.println("Pages no exist");
+    //Serial.println(preferences.putUInt("Pages4",7));
     preferences.end();
+ 
 
-    memset(pages,0,sizeof(pages));
-    pages[0]=1;pages[1]=2;pages[2]=3;
-    numberofpages=3;
-    if(Selectedpage>numberofpages)Selectedpage=0;
+    readsettings();
+    int i=0;
+    while(pages[i]!=0) {i++;}; numberofpages=i;
+
+    //if(Selectedpage>numberofpages)Selectedpage=0;
+
+
 #if defined (ESP32)
 #if defined (EVE_USE_ESP_IDF) /* not using the Arduino SPI class in order to use DMA */
     EVE_init_spi();
@@ -252,6 +263,19 @@ void PrintLabelValWithConversionCheckUnDef(const char *label, T val, double (*Co
 
 //*****************************************************************************
 
+
+void readsettings(){
+char str[10];uint8_t count;
+preferences.begin("pju-mfd",true);
+for (count=0;count<10;count++) {sprintf(str,"Pages%u",count);pages[count]=preferences.getUInt(str,1);Serial.print(str);Serial.print(" ");Serial.println(pages[count]);}
+preferences.end();
+}
+void writesettings(){
+char str[10];uint8_t count;
+preferences.begin("pju-mfd",false);
+for (count=0;count<10;count++) {sprintf(str,"Pages%u",count);preferences.putUInt(str,pages[count]);Serial.print(str);Serial.print(" ");Serial.println(pages[count]);}
+preferences.end();
+}
 
 void PosRapid(const tN2kMsg &N2kMsg){
     double Latitude;

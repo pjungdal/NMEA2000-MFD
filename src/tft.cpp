@@ -96,6 +96,9 @@ extern bool init_combined2_page(void);
 extern void  Display_combined2_Page(void);
 extern bool init_digital(void);
 extern void display_digital(void);
+extern void display_pagemenu(void);
+extern uint8_t menuselect;
+extern uint8_t pmpage,pmfunction;
 uint32_t num_dl_static; /* amount of bytes in the static part of our display-list */
 uint8_t tft_active;
 uint8_t pagedisplayed = 0;
@@ -190,6 +193,7 @@ int mins;
 int secs;
 int deg;
 bool loading=false;
+    if(menuselect==0){
     switch ((pages[Selectedpage]))
     {
     case 1:{ // Sail steer
@@ -220,7 +224,7 @@ bool loading=false;
 
     default:
     break;
-    }
+    }}
 if(loading) return;
 
         //if (EVE_IS_BUSY == EVE_busy()) /* is EVE still processing the last display list? */
@@ -242,6 +246,24 @@ if(loading) return;
     EVE_color_rgb(WHITE);
     EVE_cmd_dl(DL_VERTEX_FORMAT);
    //Serial.print("Selected: "); Serial.print(Selectedpage); Serial.print(" Display: ");Serial.println(pages[Selectedpage]);
+
+    switch (menuselect)
+    {
+    case 1:{ //Serial.println("display_pagemenu()");
+            display_pagemenu();
+                EVE_cmd_dl_burst(DL_DISPLAY);
+                EVE_cmd_dl_burst(CMD_SWAP);
+                EVE_end_cmd_burst();
+            return;
+            }
+        break;
+    
+    default:
+        break;
+    }
+
+
+
     switch ((pages[Selectedpage]))
     {
     case 1:{ // Sail steer
