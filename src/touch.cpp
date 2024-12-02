@@ -88,7 +88,7 @@ void TFT_touch(void)
             if (((touch_current_millis - touch_previous_millis) > 50))
             {
                 touch_previous_millis = touch_current_millis;
-Serial.println("Write settings");writesettings();
+
             }
 #ifdef DEBUG
             //Serial.println("up");
@@ -107,7 +107,7 @@ Serial.println("Write settings");writesettings();
                 touch_previous_millis = touch_current_millis;
 
             }
-Serial.println("Read settings");readsettings();
+
 #ifdef DEBUG
                 //Serial.println("down");
 #endif

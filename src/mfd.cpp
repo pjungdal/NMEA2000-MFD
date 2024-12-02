@@ -139,8 +139,6 @@ void setup()
     Serial.begin(115200);
     preferences.begin("pju-mfd",false);
     Selectedpage = preferences.getUInt("Selected",1);
-    //if(preferences.isKey("Pages4")) Serial.println("Pages exist"); else Serial.println("Pages no exist");
-    //Serial.println(preferences.putUInt("Pages4",7));
     preferences.end();
  
 
@@ -148,7 +146,6 @@ void setup()
     int i=0;
     while(pages[i]!=0) {i++;}; numberofpages=i;
 
-    //if(Selectedpage>numberofpages)Selectedpage=0;
 
 
 #if defined (ESP32)
@@ -260,20 +257,17 @@ void PrintLabelValWithConversionCheckUnDef(const char *label, T val, double (*Co
     if (AddLf)
         OutputStream->println();
 }
-
 //*****************************************************************************
-
-
 void readsettings(){
 char str[10];uint8_t count;
 preferences.begin("pju-mfd",true);
-for (count=0;count<10;count++) {sprintf(str,"Pages%u",count);pages[count]=preferences.getUInt(str,1);Serial.print(str);Serial.print(" ");Serial.println(pages[count]);}
+for (count=0;count<10;count++) {sprintf(str,"Pages%u",count);pages[count]=preferences.getUInt(str,1);/*Serial.print(str);Serial.print(" ");Serial.println(pages[count]);*/}
 preferences.end();
 }
 void writesettings(){
 char str[10];uint8_t count;
 preferences.begin("pju-mfd",false);
-for (count=0;count<10;count++) {sprintf(str,"Pages%u",count);preferences.putUInt(str,pages[count]);Serial.print(str);Serial.print(" ");Serial.println(pages[count]);}
+for (count=0;count<10;count++) {sprintf(str,"Pages%u",count);preferences.putUInt(str,pages[count]);/*Serial.print(str);Serial.print(" ");Serial.println(pages[count]);*/}
 preferences.end();
 }
 
@@ -383,9 +377,7 @@ Serial.print(" Off heading: ");Serial.print(RadToDeg(OffHeadingLimit[1]));
 Serial.print(" Off track: ");Serial.print(OffTrackLimit[1]);
 Serial.print(" Vessel heading: ");Serial.println(RadToDeg(VesselHeading[1]));*/
 }
-
-
-   void CrossTrackError(const tN2kMsg &N2kMsg){
+void CrossTrackError(const tN2kMsg &N2kMsg){
     unsigned char SID;
     tN2kXTEMode XTEMode; 
     bool NavigationTerminated; 
@@ -394,11 +386,6 @@ Serial.print(" Vessel heading: ");Serial.println(RadToDeg(VesselHeading[1]));*/
         //Serial.println(XTE);
         mfd_XTE=XTE;
    }
-
-
-
-
-
 void NavigationData(const tN2kMsg &N2kMsg){
     unsigned char SID; 
     double DistanceToWaypoint; 
@@ -543,8 +530,6 @@ void ApCommand(const tN2kMsg &N2kMsg)
    //OutputStream->println();}
 #endif
 }
-
-
 void WindSpeed(const tN2kMsg &N2kMsg){
     unsigned char SID;
     double WindSpeed;

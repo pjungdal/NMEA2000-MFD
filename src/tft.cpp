@@ -118,6 +118,9 @@ void TFT_init(void)
     if (E_OK == EVE_init())
     {
         tft_active = 1;
+        EVE_cmd_flashdetach();
+        EVE_execute_cmd();
+
         EVE_cmd_flashattach();
 		Serial.println(EVE_cmd_flashfast(),16);
 		flashstatus=EVE_memRead8(REG_FLASH_STATUS);
