@@ -13,17 +13,20 @@
 
 void SetN2kPGN130850(tN2kMsg &N2kMsg, const char* Command);
 
-
+void SetN2kPGN130845(tN2kMsg &N2kMsg, uint16_t level);
 inline void SetN2kAp(tN2kMsg &N2kMsg, const char* Command) {
   SetN2kPGN130850(N2kMsg,Command);
 }
-
+inline void SetN2kbgLight(tN2kMsg &N2kMsg, uint16_t level) {
+  SetN2kPGN130845(N2kMsg,level);
+}
 
 bool ParseN2kPGN130850(const tN2kMsg &N2kMsg,char *Command);
 bool ParseN2kPGN65341(const tN2kMsg &N2kMsg,unsigned char &mode,double &angle);
 bool ParseN2kPGN130821(const tN2kMsg &N2kMsg,unsigned int &MfCode,char * str);
 bool ParseN2kPGN65305(const tN2kMsg &N2kMsg,unsigned int &MfCode,unsigned char &Model,unsigned char &Dr,unsigned int &Mode);
 bool ParseN2kPGN130824(const tN2kMsg &N2kMsg, unsigned int &MfCode, int keyval[50][2]);
+bool ParseN2kPGN130845(const tN2kMsg &N2kMsg,uint16_t &key, uint16_t &val);
 
 inline bool ParseN2kAp(const tN2kMsg &N2kMsg,char *Command) {
 
@@ -43,4 +46,8 @@ inline bool ParseApStatusMode(const tN2kMsg &N2kMsg,unsigned int &MfCode,unsigne
 }
 inline bool ParseBGKeyValue(const tN2kMsg &N2kMsg,unsigned int &MfCode,int keyval[50][2]){
   return ParseN2kPGN130824(N2kMsg,MfCode,keyval);
+}
+
+inline bool ParseSimnetKeyValue(const tN2kMsg &N2kMsg,uint16_t &key,uint16_t &val){
+  return ParseN2kPGN130845(N2kMsg,key,val);
 }

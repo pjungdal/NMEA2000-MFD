@@ -118,7 +118,9 @@ void TFT_touch(void)
                 touch_previous_millis = touch_current_millis;
                 LightPressed = true;
                 LightLevel = LightLevel + 0x10;
-                if (LightLevel > 0x80) LightLevel =0x10;
+                if (LightLevel > 0x80) LightLevel =0x0;
+            SetN2kbgLight(N2kMsg,LightLevel);
+            NMEA2000.SendMsg(N2kMsg);
 
 #ifdef DEBUG
             //Serial.println("menu/light");
@@ -146,7 +148,7 @@ void TFT_touch(void)
             
             if(mfd_APMode==0x10 || mfd_APMode==0x100 || mfd_APMode==0x40 || mfd_APMode==0x400 && mfd_APStatus==16){
             unsigned char str[6] = {0x0A,0x1A,00,03,0xD1,06};
-            SetN2kAp(N2kMsg,(const char * ) str);
+            SetN2kbgLight(N2kMsg,LightLevel);
             NMEA2000.SendMsg(N2kMsg);
 
   

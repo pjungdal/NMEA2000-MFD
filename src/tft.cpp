@@ -102,7 +102,7 @@ extern uint8_t pmpage,pmfunction;
 uint32_t num_dl_static; /* amount of bytes in the static part of our display-list */
 uint8_t tft_active;
 uint8_t pagedisplayed = 0;
-uint8_t LightLevel = 10;
+extern uint8_t LightLevel;
 int heading = 0;
 bool buttons_init =false;
 rg_state_t rg_state = EMPTY;
@@ -124,7 +124,7 @@ void TFT_init(void)
         EVE_cmd_flashattach();
 		Serial.println(EVE_cmd_flashfast(),16);
 		flashstatus=EVE_memRead8(REG_FLASH_STATUS);
-        EVE_memWrite8(REG_PWM_DUTY, 0x30);
+        EVE_memWrite8(REG_PWM_DUTY, LightLevel);
 		switch (flashstatus){
 			case 0:sprintf(status_str,"%s ","Flash status: FLASH_STATUS_INIT ");
 			break;
@@ -137,7 +137,7 @@ void TFT_init(void)
 		}
 				Serial.print("TFT init");Serial.print(" status:");Serial.println(status_str);
 
-        EVE_memWrite8(REG_PWM_DUTY, 0x10);  /* setup backlight, range is from 0 = off to 0x80 = max */
+        EVE_memWrite8(REG_PWM_DUTY, LightLevel);  /* setup backlight, range is from 0 = off to 0x80 = max */
 
     }
 }

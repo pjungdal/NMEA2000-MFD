@@ -51,6 +51,7 @@ void ApHeadTrack(const tN2kMsg &N2kMsg);
 void CrossTrackError(const tN2kMsg &N2kMsg);
 void NavigationData(const tN2kMsg &N2kMsg);
 void BandGKeyValueData(const tN2kMsg &N2kMsg);
+void SimnetKeyValueData(const tN2kMsg &N2kMsg);
 void COGSOG(const tN2kMsg &N2kMsg);
 void TimeAndDate(const tN2kMsg &N2kMsg);
 void PosRapid(const tN2kMsg &N2kMsg);
@@ -74,6 +75,7 @@ tNMEA2000Handler NMEA2000Handlers[] = {
     {129283L, &CrossTrackError},
     {129284L, &NavigationData},
     {130824L,&BandGKeyValueData},
+    {130845L,&SimnetKeyValueData},
     {129026L,&COGSOG},
     {126992L,&TimeAndDate},
     {129025L,&PosRapid},    
@@ -126,6 +128,8 @@ int numberofpages;
 uint8_t menuselect=0;
 bool pmquit,pmstore = false;
 uint8_t pmpage,pmfunction=0;
+uint8_t LightLevel;
+
 void setup()
 {
     
@@ -137,8 +141,9 @@ void setup()
     digitalWrite(EVE_PDN, LOW);
 
     Serial.begin(115200);
-    preferences.begin("pju-mfd",false);
+    preferences.begin("pju-mfd",true);
     Selectedpage = preferences.getUInt("Selected",1);
+    LightLevel = preferences.getUInt("Lightlevel",0x40);
     preferences.end();
  
 
@@ -328,6 +333,14 @@ Serial.print("???: "); Serial.print(keyval[i][0]); Serial.print(" : ");Serial.pr
             break;
         }
     }
+}
+
+void SimnetKeyValueData(const tN2kMsg &N2kMsg){
+    uint16_t key;
+    uint16_t val;
+    ParseSimnetKeyValue( N2kMsg,key,val);
+     if(key==4863) LightLevel=(uint8_t) val; 
+
 }
 void ApHeadTrack(const tN2kMsg &N2kMsg){
 
@@ -718,20 +731,20 @@ void HandleNMEA2000Msg(const tN2kMsg &N2kMsg)
  //||N2kMsg.PGN == 130822
    //||N2kMsg.PGN == 130845||N2kMsg.PGN == 130860||N2kMsg.PGN == 130851
    //if(N2kMsg.Source == 25 || N2kMsg.Source == 50)
-   if(N2kMsg.PGN == 130821)
+   //if(N2kMsg.PGN == 130824)
    { 
   
-    //OutputStream->print(N2kMsg.PGN);
+    OutputStream->print(N2kMsg.PGN);
 
    OutputStream->print(" Source: ");
    OutputStream->print(N2kMsg.Source);
-   /*OutputStream->print(" Pri: ");
-   OutputStream->print(N2kMsg.Priority);*/
+   OutputStream->println(" ");
+   /*OutputStream->print(N2kMsg.Priority);*/
 
-   OutputStream->print(" Len: ");
+   //OutputStream->print(" Len: ");
 
-   OutputStream->print(N2kMsg.DataLen);
-   OutputStream->print(" Data: ");
+   //OutputStream->print(N2kMsg.DataLen);
+   //OutputStream->print(" Data: ");
    /*for (int i = 0;i<N2kMsg.DataLen;i++) {OutputStream->print(N2kMsg.Data[i],16);OutputStream->print(" ");}
    OutputStream->println(""); OutputStream->println("");*/
 
@@ -849,6 +862,7 @@ uint8_t temp;
 preferences.begin("pju-mfd",false);
 temp = preferences.getUInt("Selected",1);
 if (temp!= Selectedpage) preferences.putUInt("Selected",Selectedpage);
+preferences.putUInt("Lightlevel",LightLevel);
 update_timer=0;
 preferences.end();
 }

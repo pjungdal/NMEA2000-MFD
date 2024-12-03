@@ -20,6 +20,16 @@ void SetN2kPGN130850(tN2kMsg &N2kMsg, const char* Command) {
   #endif
 }
 
+void SetN2kPGN130845(tN2kMsg &N2kMsg, uint16_t level) {
+    N2kMsg.SetPGN(130845L);
+    N2kMsg.Priority=2;
+    N2kMsg.AddByte(0x41);N2kMsg.AddByte(0x9F);N2kMsg.AddByte(0xFF);N2kMsg.AddByte(0xFF);N2kMsg.AddByte(0x1);N2kMsg.AddByte(0xFF);
+    
+    N2kMsg.Add2ByteUInt(4863);
+   N2kMsg.AddByte(0);
+    N2kMsg.AddByte(1);    N2kMsg.AddByte((uint8_t)level+1);
+ //for (int i=0 ; i<12;i++){Serial.print(N2kMsg.Data[i],HEX); Serial.print(" ");}Serial.println();
+}
 bool ParseN2kPGN130850(const tN2kMsg &N2kMsg, char *Command) {
   if (N2kMsg.PGN!=130850L) return false;
     if(N2kMsg.DataLen==12){
@@ -113,5 +123,51 @@ Serial.print(" Fieldlen: ")  ;
 Serial.print(fieldlen)  ;
 Serial.print(" Value: ")  ; 
 Serial.println(value)  ;*/
+  return true;
+}
+
+bool ParseN2kPGN130845(const tN2kMsg &N2kMsg, uint16_t &key,uint16_t &val ) {
+  int Index=0;
+  uint8_t keylen;
+  //uint16_t key;
+  uint16_t MfCode;
+  uint16_t value;
+  unsigned int fieldlen;
+  uint8_t cmddevice;
+  uint8_t repeatind;
+  uint8_t displayg;
+  uint8_t reserved;
+  uint8_t spare;
+  if (N2kMsg.PGN!=130845L) return false;
+  MfCode= N2kMsg.Get2ByteUInt(Index)&0x7FF;
+Serial.print(N2kMsg.DataLen);{
+
+cmddevice=N2kMsg.GetByte(Index);
+repeatind=N2kMsg.GetByte(Index);
+displayg=N2kMsg.GetByte(Index);
+reserved=N2kMsg.GetByte(Index);
+key=N2kMsg.Get2ByteUInt(Index);
+spare=N2kMsg.GetByte(Index);
+fieldlen=N2kMsg.GetByte(Index);
+val = N2kMsg.GetByte(Index);
+
+/*Serial.print(" MFCode: ")  ; 
+Serial.print(MfCode)  ;
+Serial.print(" DEV: ")  ; 
+Serial.print(cmddevice,HEX)  ;
+Serial.print(" REP: ")  ; 
+Serial.print(repeatind)  ;
+Serial.print(" GRP: ")  ; 
+Serial.print(displayg) ;
+
+Serial.print(" Key: ")  ; 
+Serial.print(key)  ;
+
+Serial.print(" Fieldlen: ")  ; 
+Serial.print(fieldlen) ;
+Serial.print(" Value: ")  ; 
+Serial.println(val) ;*/
+}
+
   return true;
 }
